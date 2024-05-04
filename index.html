@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/mai.js"></script>
+    <title>Formulario</title>
+</head>
+<body>
+    <header><h1>Creación de Formulario Dinámico</h1></header>
+    <div class="contenedor">
+        <form id="quiz-form">
+            <h3>Cantidad de Preguntas</h3>
+            <br><br>
+            <label for="num-preguntas">Número de preguntas:</label> <br>
+            <input type="number" id="num-preguntas" min="1" required> <br>
+            <button type="button" id="configur-question">Configurar Cuestionario</button>
+        </form>
+
+        <div class="contenedor-general-question" id="contenedor-preguntas" style="display: none;">
+            <h3>Configuración de Preguntas</h3>
+            <br> <br>
+            <div id="question-container">
+                <div id="question"></div>
+                
+            </div>
+            <button type="button" id="add-question">Aceptar</button>
+        </div>
+
+        <div class="contenedor-general-question" style="display: block;">
+            <h3>Tabla de Respuestas</h3>
+            <textarea id="respuesta-cuestionario" rows="10" cols="50"></textarea>
+        </div>
+    </div>
+</body>
+</html>

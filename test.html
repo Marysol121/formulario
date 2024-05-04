@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Dinámico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Cuestionario Dinámico</h1>
+    <form id="quiz-form">
+        <label for="num-questions">Número de preguntas:</label>
+        <input type="number" id="num-questions" min="1" required>
+        <button type="button" id="configure-questions-btn">Configurar</button>
+    </form>
+
+    <div id="question-container" style="display: none;">
+        <div id="questions"></div>
+        <button id="submit-quiz-btn">Aceptar</button>
+    </div>
+
+    <textarea id="responses" rows="5" cols="50" readonly style="display: none;"></textarea>
+
+    <script src="script.js"></script>
+</body>
+<script>
+    document.getElementById('configure-questions-btn').addEventListener('click', function() {
+        const numQuestions = parseInt(document.getElementById('num-questions').value);
+        const questionsContainer = document.getElementById('questions');
+        questionsContainer.innerHTML = ''; // Limpiar preguntas anteriores
+    
+        for (let i = 1; i <= numQuestions; i++) {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+    
+            const questionLabel = document.createElement('label');
+            questionLabel.textContent = `Pregunta ${i}: `;
+            questionDiv.appendChild(questionLabel);
+    
+            const selectInput = document.createElement('select');
+            selectInput.classList.add('question-type');
+            selectInput.innerHTML = `
+                <option value="text">Pregunta de texto</option>
+                <option value="true-false">Pregunta de Verdadero/Falso</option>
+                <option value="multiple-choice">Opción Múltiple</option>
+            `;
+            questionDiv.appendChild(selectInput);
+    
+            questionsContainer.appendChild(questionDiv);
+        }
+    
+        document.getElementById('question-container').style.display = 'block';
+    });
+    
+    document.getElementById('submit-quiz-btn').addEventListener('click', function() {
+        const questions = document.querySelectorAll('.question');
+        let responses = '';
+    
+        questions.forEach((question, index) => {
+            const questionType = question.querySelector('.question-type').value;
+            const questionText = `Pregunta ${index + 1}: `;
+            let answer;
+    
+            if (questionType === 'text') {
+                answer = prompt(questionText);
+            } else if (questionType === 'true-false') {
+                answer = confirm(questionText);
+            } else if (questionType === 'multiple-choice') {
+                const options = ['Opción 1', 'Opción 2', 'Opción 3']; // Ejemplo de opciones
+                answer = prompt(`${questionText} (${options.join(', ')})`);
+            }
+    
+            responses += `${questionText}${answer}\n`;
+        });
+    
+        document.getElementById('responses').value = responses;
+        document.getElementById('responses').style.display = 'block';
+    });
+    
+</script>
+</html>

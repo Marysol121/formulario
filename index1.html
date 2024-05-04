@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuestionario Dinámico</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+}
+
+#formulario {
+  margin-bottom: 20px;
+}
+
+#respuestas {
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="formulario">
+  <label for="numPreguntas">Número de preguntas:</label>
+  <input type="number" id="numPreguntas" min="1" max="10">
+  <button id="crearBtn">Crear Cuestionario</button>
+</div>
+
+<div id="cuestionario" style="display: none;">
+  <form id="preguntasForm">
+    <!-- Las preguntas se insertarán aquí con JavaScript -->
+    <button type="submit">Aceptar</button>
+  </form>
+</div>
+
+<div id="respuestas" style="display: none;">
+  <h2>Respuestas:</h2>
+  <textarea id="respuestasText" rows="10" cols="50" readonly></textarea>
+</div>
+
+<script>
+document.getElementById("crearBtn").addEventListener("click", function() {
+  crearCuestionario();
+});
+
+function crearCuestionario() {
+  var numPreguntas = parseInt(document.getElementById("numPreguntas").value);
+  var cuestionarioDiv = document.getElementById("cuestionario");
+  var preguntasForm = document.getElementById("preguntasForm");
+  preguntasForm.innerHTML = "";
+
+  for (var i = 0; i < numPreguntas; i++) {
+    var preguntaDiv = document.createElement("div");
+    preguntaDiv.classList.add("pregunta");
+
+    var tipoPregunta = prompt("Tipo de pregunta para la pregunta " + (i + 1) + ": (Texto / Verdadero-Falso / Opción Múltiple)").toLowerCase();
+
+    var enunciado = prompt("Enunciado para la pregunta " + (i + 1) + ":");
+
+    if (tipoPregunta === "texto") {
+      var input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("placeholder", "Respuesta para " + enunciado);
+      preguntaDiv.appendChild(input);
+    } else if (tipoPregunta === "verdadero-falso") {
+      var labelVerdadero = document.createElement("label");
+      labelVerdadero.innerHTML = "Verdadero";
+      var inputVerdadero = document.createElement("input");
+      inputVerdadero.setAttribute("type", "radio");
+      inputVerdadero.setAttribute("name", "pregunta" + i);
+      inputVerdadero.setAttribute("value", "verdadero");
+      var labelFalso = document.createElement("label");
+      labelFalso.innerHTML = "Falso";
+      var inputFalso = document.createElement("input");
+      inputFalso.setAttribute("type", "radio");
+      inputFalso.setAttribute("name", "pregunta" + i);
+      inputFalso.setAttribute("value", "falso");
+
+      preguntaDiv.appendChild(document.createTextNode(enunciado));
+      preguntaDiv.appendChild(inputVerdadero);
+      preguntaDiv.appendChild(labelVerdadero);
+      preguntaDiv.appendChild(inputFalso);
+      preguntaDiv.appendChild(labelFalso);
+    } else if (tipoPregunta === "opción múltiple") {
+      var opciones = prompt("Ingrese las opciones separadas por coma para la pregunta " + (i + 1) + ":").split(",");
+      for (var j = 0; j < opciones.length; j++) {
+        var label = document.createElement("label");
+        label.innerHTML = opciones[j];
+        var input = document.createElement("input");
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("name", "pregunta" + i + "opciones");
+        input.setAttribute("value", opciones[j]);
+        preguntaDiv.appendChild(input);
+        preguntaDiv.appendChild(label);
+      }
+    }
+
+    preguntasForm.appendChild(preguntaDiv);
+  }
+
+  cuestionarioDiv.style.display = "block";
+}
+
+document.getElementById("preguntasForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  mostrarRespuestas();
+});
+
+function mostrarRespuestas() {
+  var respuestasText = document.getElementById("respuestasText");
+  respuestasText.value = "";
+
+  var formulario = document.getElementById("preguntasForm");
+  var preguntas = formulario.getElementsByClassName("pregunta");
+
+  for (var i = 0; i < preguntas.length; i++) {
+    var pregunta = preguntas[i];
+    var enunciado = pregunta.textContent.trim();
+    var respuesta = "";
+
+    if (pregunta.querySelector("input[type='text']")) {
+      respuesta = pregunta.querySelector("input[type='text']").value;
+    } else if (pregunta.querySelector("input[type='radio']")) {
+      var radios = pregunta.querySelectorAll("input[type='radio']");
+      for (var j = 0; j < radios.length; j++) {
+        if (radios[j].checked) {
+          respuesta = radios[j].value;
+          break;
+        }
+      }
+    } else if (pregunta.querySelector("input[type='checkbox']")) {
+      var checkboxes = pregunta.querySelectorAll("input[type='checkbox']");
+      for (var k = 0; k < checkboxes.length; k++) {
+        if (checkboxes[k].checked) {
+          respuesta += checkboxes[k].value + ", ";
+        }
+      }
+      respuesta = respuesta.slice(0, -2); // Elimina la coma y el espacio al final
+    }
+
+    respuestasText.value += enunciado + ": " + respuesta + "\n";
+  }
+
+  document.getElementById("respuestas").style.display = "block";
+}
+</script>
+
+</body>
+</html>
